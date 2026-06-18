@@ -1,0 +1,26 @@
+# Virtual Environment
+.venv/
+venv/
+myenv/
+/schemas/
+
+
+
+
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+
+# VS Code
+.vscode/
+
+# Logs
+app.log
+*.log
+
+
+

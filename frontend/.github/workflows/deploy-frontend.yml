@@ -1,0 +1,38 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy Frontend
+        run: |
+          set -e
+
+          echo "===== FRONTEND CI START ====="
+
+          cd /var/www/kafkaui-frontend
+
+          git fetch origin
+          git reset --hard origin/main
+
+          npm ci
+          npm run build
+
+          IMAGE_TAG=$(date +%s)
+
+          docker build -t reposnode.infra.alephys.com:5000/kafakmanagerui/frontend:$IMAGE_TAG .
+          docker push reposnode.infra.alephys.com:5000/kafakmanagerui/frontend:$IMAGE_TAG
+
+          kubectl set image deployment/frontend \
+            frontend=reposnode.infra.alephys.com:5000/kafakmanagerui/frontend:$IMAGE_TAG \
+            -n kafakmanagerui
+
+          kubectl rollout status deployment/frontend -n kafakmanagerui
+
+          echo "===== FRONTEND CI DONE ====="

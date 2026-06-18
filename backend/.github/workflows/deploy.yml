@@ -1,0 +1,40 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy Backend
+        run: |
+          set -e
+
+          echo "===== BACKEND CI START ====="
+
+          cd /opt/kafkaui-backend
+
+          git fetch origin
+          git reset --hard origin/main
+
+          IMAGE_TAG=$(date +%s)
+
+          echo "Building image..."
+          docker build -t reposnode.infra.alephys.com:5000/kafakmanagerui/backend:$IMAGE_TAG .
+
+          echo "Pushing image..."
+          docker push reposnode.infra.alephys.com:5000/kafakmanagerui/backend:$IMAGE_TAG
+
+          echo "Updating Kubernetes deployment..."
+          kubectl set image deployment/backend \
+            backend=reposnode.infra.alephys.com:5000/kafakmanagerui/backend:$IMAGE_TAG \
+            -n kafakmanagerui
+
+          echo "Waiting for rollout..."
+          kubectl rollout status deployment/backend -n kafakmanagerui
+
+          echo "===== BACKEND CI DONE ====="
