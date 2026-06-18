@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>sso_mfa_guide.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="ssooauth2-with-mfa-implementation-guide">SSO/OAuth2 with MFA Implementation Guide</h1>
+<p>This document outlines the architecture, workflow, and code implementation for a secure Single Sign-On (SSO) system using OAuth2/OpenID Connect (OIDC) with Multi-Factor Authentication (MFA).</p>
+<h2 id="1-high-level-architecture">1. High-Level Architecture</h2>
+<p>The architecture uses <strong>Keycloak</strong> as the Identity Provider (IdP), <strong>FastAPI</strong> as the Resource Server (Backend), and <strong>React</strong> as the Client (Frontend).</p>
+<pre><code class="language-mermaid"><div class="mermaid">sequenceDiagram
+    participant User
+    participant Frontend as React App
+    participant Keycloak as Keycloak (IdP)
+    participant Backend as FastAPI
+
+    User->>Frontend: Access Application
+    Frontend->>Keycloak: Redirect to Login (OIDC Flow)
+    Keycloak->>User: Username/Password Prompt
+    User->>Keycloak: Submit Credentials
+    Keycloak->>User: MFA Challenge (TOTP/OTP)
+    User->>Keycloak: Submit MFA Code
+    Keycloak->>Frontend: Redirect with Auth Code
+    Frontend->>Keycloak: Exchange Code for Tokens
+    Keycloak-->>Frontend: ID, Access, & Refresh Tokens
+    
+    Note over Frontend, Backend: API Request with Token
+    Frontend->>Backend: GET /data (Header: Bearer <Token>)
+    Backend->>Backend: Validate Token (JWKS/Signature)
+    Backend-->>Frontend: Protected Resource Data
+</div></code></pre>
+<hr>
+<h2 id="2-keycloak-configuration-mfa">2. Keycloak Configuration (MFA)</h2>
+<p>To enable MFA in Keycloak:</p>
+<ol>
+<li><strong>Authentication Flow</strong>: Go to &quot;Authentication&quot; -&gt; &quot;Flows&quot;. Copy the &quot;Browser&quot; flow.</li>
+<li><strong>Add Execution</strong>: Add &quot;OTP Form&quot; (Required) after the &quot;Username Password Form&quot;.</li>
+<li><strong>Bind Flow</strong>: Bind the new flow as the default &quot;Browser Flow&quot; for your realm.</li>
+<li><strong>Required Action</strong>: Set &quot;Configure OTP&quot; as a default required action for new users.</li>
+</ol>
+<hr>
+<h2 id="3-frontend-implementation-react">3. Frontend Implementation (React)</h2>
+<h3 id="keycloakts-initialization"><code>keycloak.ts</code> (Initialization)</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> Keycloak <span class="hljs-keyword">from</span> <span class="hljs-string">"keycloak-js"</span>;
+
+<span class="hljs-keyword">const</span> keycloak = <span class="hljs-keyword">new</span> Keycloak({
+  url: <span class="hljs-string">"https://auth.example.com/"</span>,
+  realm: <span class="hljs-string">"my-realm"</span>,
+  clientId: <span class="hljs-string">"my-frontend-client"</span>,
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> initKeycloak = <span class="hljs-function">(<span class="hljs-params">onAuthenticatedCallback: <span class="hljs-built_in">Function</span></span>) =&gt;</span> {
+  keycloak
+    .init({ 
+      onLoad: <span class="hljs-string">"check-sso"</span>, 
+      silentCheckSsoRedirectUri: <span class="hljs-built_in">window</span>.location.origin + <span class="hljs-string">"/silent-check-sso.html"</span>,
+      pkceMethod: <span class="hljs-string">"S256"</span> 
+    })
+    .then(<span class="hljs-function">(<span class="hljs-params">authenticated</span>) =&gt;</span> {
+      <span class="hljs-keyword">if</span> (authenticated) {
+        onAuthenticatedCallback();
+      } <span class="hljs-keyword">else</span> {
+        keycloak.login();
+      }
+    });
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> keycloak;
+</div></code></pre>
+<h3 id="apits-axios-interceptor"><code>api.ts</code> (Axios Interceptor)</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">"axios"</span>;
+<span class="hljs-keyword">import</span> keycloak <span class="hljs-keyword">from</span> <span class="hljs-string">"./keycloak"</span>;
+
+<span class="hljs-keyword">const</span> api = axios.create({
+  baseURL: <span class="hljs-string">"http://localhost:8000"</span>,
+});
+
+api.interceptors.request.use(<span class="hljs-keyword">async</span> (config) =&gt; {
+  <span class="hljs-keyword">if</span> (keycloak.token) {
+    <span class="hljs-comment">// Refresh token if it's expired or about to expire (30s buffer)</span>
+    <span class="hljs-keyword">await</span> keycloak.updateToken(<span class="hljs-number">30</span>);
+    config.headers.Authorization = <span class="hljs-string">`Bearer <span class="hljs-subst">${keycloak.token}</span>`</span>;
+  }
+  <span class="hljs-keyword">return</span> config;
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> api;
+</div></code></pre>
+<hr>
+<h2 id="4-backend-implementation-fastapi">4. Backend Implementation (FastAPI)</h2>
+<h3 id="authpy-dependency"><code>auth.py</code> (Dependency)</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> jwt
+<span class="hljs-keyword">from</span> fastapi <span class="hljs-keyword">import</span> Depends, HTTPException, status
+<span class="hljs-keyword">from</span> fastapi.security <span class="hljs-keyword">import</span> OAuth2PasswordBearer
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> Optional
+
+<span class="hljs-comment"># Configuration</span>
+KEYCLOAK_URL = <span class="hljs-string">"https://auth.example.com/realms/my-realm"</span>
+JWKS_URL = <span class="hljs-string">f"<span class="hljs-subst">{KEYCLOAK_URL}</span>/protocol/openid-connect/certs"</span>
+AUDIENCE = <span class="hljs-string">"account"</span>
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=<span class="hljs-string">"token"</span>)
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_current_user</span><span class="hljs-params">(token: str = Depends<span class="hljs-params">(oauth2_scheme)</span>)</span>:</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># 1. Fetch JWKS from Keycloak (should be cached in production)</span>
+        <span class="hljs-comment"># 2. Decode and validate token</span>
+        payload = jwt.decode(
+            token, 
+            key=get_public_key(token), <span class="hljs-comment"># Helper to get key from JWKS</span>
+            algorithms=[<span class="hljs-string">"RS256"</span>], 
+            audience=AUDIENCE,
+            issuer=KEYCLOAK_URL
+        )
+        
+        <span class="hljs-comment"># 3. Optional: Verify MFA was used (check 'acr' claim)</span>
+        <span class="hljs-comment"># 'acr': '1' usually means password, '2' or higher often means MFA</span>
+        <span class="hljs-keyword">if</span> payload.get(<span class="hljs-string">"acr"</span>) != <span class="hljs-string">"gold"</span>: <span class="hljs-comment"># Example custom ACR for MFA</span>
+             <span class="hljs-keyword">pass</span> <span class="hljs-comment"># Logic to enforce MFA if needed</span>
+             
+        <span class="hljs-keyword">return</span> payload
+    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+        <span class="hljs-keyword">raise</span> HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=<span class="hljs-string">"Invalid authentication credentials"</span>,
+            headers={<span class="hljs-string">"WWW-Authenticate"</span>: <span class="hljs-string">"Bearer"</span>},
+        )
+</div></code></pre>
+<hr>
+<h2 id="5-security-best-practices">5. Security Best Practices</h2>
+<ol>
+<li><strong>Use PKCE</strong>: Always use Proof Key for Code Exchange (PKCE) for public clients (Frontend).</li>
+<li><strong>Token Validation</strong>: Backend must validate the signature, expiration (<code>exp</code>), issuer (<code>iss</code>), and audience (<code>aud</code>).</li>
+<li><strong>MFA Enforcement</strong>: Configure Keycloak to require MFA for specific roles or high-risk actions.</li>
+<li><strong>HTTPS</strong>: Never transmit tokens over unencrypted channels.</li>
+</ol>
+
+</body>
+</html>
